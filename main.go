@@ -33,11 +33,27 @@ type UserData struct {
 var wg = sync.WaitGroup{} // WaitGroup is used to wait for all goroutines to finish.
 var mu sync.Mutex         // protects shared state (e.g., remainingRendang). A Mutex is a mutual exclusion lock that allows only one goroutine to access the shared state at a time.
 
+// Order channel
+var ordersChan = make(chan UserData)
+
 func main() {
 
 	greetUser()
 
+	// Start worker pool
+	numWorkers := 3
+	for i := 1; i <= numWorkers; i++ {
+		go worker(i, ordersChan)
+	}
+
 	for len(bookings) < 100 {
+
+		mu.Lock()
+		if remainingRendang == 0 {
+			mu.Unlock()
+			break
+		}
+		mu.Unlock()
 
 		firstName, lastName, userEmail, userOrders := getUserInput()
 
@@ -47,20 +63,17 @@ func main() {
 
 		if isValidName && isValidEmail && isValidOrders {
 
-			mu.Lock()
-			bookRendang(firstName, lastName, userEmail, userOrders)
-			mu.Unlock()
-
-			wg.Add(1)
-			go sendConfirmationEmail(userOrders, firstName, lastName, userEmail) // go keyword is used to create a new goroutine (a lightweight thread managed by the Go runtime). It's asynchronous.
-
-			firstNames := printFirstNames()
-			fmt.Printf("The first names of bookings are: %v\n", firstNames)
-			fmt.Println("Thank you for your order!")
+			order := UserData{
+				firstName:  firstName,
+				lastName:   lastName,
+				userEmail:  userEmail,
+				userOrders: userOrders,
+			}
+			ordersChan <- order
 
 			noRendangRemaining := remainingRendang == 0 // boolean
 			if noRendangRemaining {
-				fmt.Println("Our rendang is sold out! See you next Ramadan & Selamat Hari Raya!")
+				fmt.Println("Our rendang has sold out! See you next Ramadan & Selamat Hari Raya!")
 				break
 			}
 		} else {
@@ -122,28 +135,25 @@ func getUserInput() (string, string, string, uint) {
 	return firstName, lastName, email, orders
 }
 
-func printFirstNames() []string {
-	// for-each loop
-	// think of _ (blank identifier) as Python's enumerate() function
-	firstNames := []string{} // we use {} when we want a non-nil slice
+func worker(id int, orders <-chan UserData) {
+	for order := range orders {
 
-	for _, booking := range bookings {
-		firstNames = append(firstNames, booking.firstName) // append() returns a new slice with the new element added
+		mu.Lock()
+		if remainingRendang >= order.userOrders {
+			remainingRendang -= order.userOrders
+			bookings = append(bookings, order)
+
+			fmt.Printf("[Worker %d] Processed order for %s. Remaining: %d\n",
+				id, order.firstName, remainingRendang)
+
+			wg.Add(1)
+			go sendConfirmationEmail(order.userOrders, order.firstName, order.lastName, order.userEmail)
+		} else {
+			fmt.Printf("[Worker %d] Not enough rendang for %s. Remaining: %d\n",
+				id, order.firstName, remainingRendang)
+		}
+		mu.Unlock()
 	}
-	return firstNames
-}
-
-func bookRendang(firstName string, lastName string, email string, orders uint) {
-	remainingRendang -= orders
-
-	// create user map
-	var userData = UserData{
-		firstName:  firstName,
-		lastName:   lastName,
-		userEmail:  email,
-		userOrders: orders,
-	}
-	bookings = append(bookings, userData)
 }
 
 func sendConfirmationEmail(orders uint, firstName string, lastName string, email string) {

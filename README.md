@@ -21,10 +21,68 @@ go run .
 go fmt # to format your code!
 ```
 
+# How The Program Works & Outputs
+
+On a high level, when using the CLI, we can essentially fake order Rendang as the CLI tool will ask us for first/last name, email & how many orders we want to make.
+
+```
+Welcome to our Rendang Factory!
+Get your Rendang stock here!
+We have 100.00 packets of rendang available.
+Enter your first name:
+Faiq
+Enter your last name:
+Adzlan
+Enter your email address:
+faiq@gmail.com
+Enter your orders:
+54
+The first names of bookings are: [Faiq]
+Thank you for your order!
+You're in Malaysia.
+Enter your first name:
+Zahirah
+Enter your last name:
+Yayah
+Enter your email address:
+yayah@gmail.###########
+Sending confirmation email: Faiq Adzlan has ordered 54 packets of rendang.
+To: faiq@gmail.com...
+###########
+com
+Enter your orders:
+46
+The first names of bookings are: [Faiq Zahirah]
+Thank you for your order!
+Our rendang is sold out! See you next Ramadan & Selamat Hari Raya!
+###########
+Sending confirmation email: Zahirah Yayah has ordered 46 packets of rendang.
+To: yayah@gmail.com...
+###########
+All confirmation emails have been sent. List of all bookings:
+[{Faiq Adzlan faiq@gmail.com 54} {Zahirah Yayah yayah@gmail.com 46}]
+```
+
+Here's the general flow more technically:
+
+```
+Main Goroutine
+    ↓
+Order Channel
+    ↓
+Worker Pool (multiple goroutines)
+    ↓
+Mutex-protected stock update
+    ↓
+Async Email Sender (Mocked)
+```
+
 # Notes
 Regarding goroutines, the main goroutine **does NOT** wait for other goroutines so if the main goroutine exited, other goroutines e.g., sendConfirmationEmail will not be executed. To remedy this, we use a `WaitGroup`. Also, in comparison to other languages, creating thread is cheaper, with fast startup times, with minimal resources used.
 
-Regarding `WaitGroup`s, these essentially wiat for the launched goroutines to finish.
+**Channels in Go are typed conduits used to send and receive values**, allowing goroutines to synchronize execution and communicate without explicit locks. They provide safe data transfer, blocking by default until both sender and receiver are ready.
+
+Regarding `WaitGroup`, these essentially wait for the launched goroutines to finish.
 - The package `sync` provides basic synchronization functionality.
 - `Add` sets the number of goroutines to wait for (increases the counter by the provided number).
 - `Wait` blocks until the `WaitGroup` counter is 0.
@@ -61,4 +119,7 @@ func printFirstNames() []string {
 ```
 
 # Resources
-- Golang Tutorial for Beginners | Full Go Course: https://www.youtube.com/watch?v=yyUHQIec83I
+- [Golang Tutorial for Beginners | Full Go Course](https://www.youtube.com/watch?v=yyUHQIec83I)
+- [Go Channels](https://go.dev/tour/concurrency/2)
+- [Go Goroutines](https://go.dev/tour/concurrency/1)
+- [A Tour of Go](https://go.dev/tour/list)
