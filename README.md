@@ -123,3 +123,4 @@ func printFirstNames() []string {
 - [Go Channels](https://go.dev/tour/concurrency/2)
 - [Go Goroutines](https://go.dev/tour/concurrency/1)
 - [A Tour of Go](https://go.dev/tour/list)
+- [Advanced Golang: Channels, Context and Interfaces Explained](youtube.com/watch?si=IHmrmKsboSbbMQP2&v=VkGQFFl66X4&feature=youtu.be)
