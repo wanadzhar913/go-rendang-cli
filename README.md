@@ -15,10 +15,10 @@ go env GOPATH # home/faiq0913/go
 To start the CLI program:
 
 ```bash
-go mod init go-ticketing-app
+# go mod init go-rendang-cli
 go run .
 
-go fmt # to format your code!
+go fmt # to format your code if you make changes!
 ```
 
 # How The Program Works & Outputs
