@@ -1,7 +1,10 @@
+# Simple Rendang Ordering CLI in Go
 A small project for learning the basics of Golang. Also can't wait for Hari Raya Aidilfitri! 🥳
 
-# Getting Started
-We first install Go from it's [website](https://go.dev/doc/install). I'm using WSL2.
+## 1.0 Getting Started
+
+We first install Go from it's [website](https://go.dev/doc/install). I'm using WSL2. In case you get the wrong Go interpreter path, on VSCode/Cursor, press `CTRL + SHIFT + P` > **Go: Choose Go Environment** > /usr/local/go/bin/go
+
 
 ```bash
 wget https://go.dev/dl/go1.26.0.darwin-amd64.pkg
@@ -21,7 +24,7 @@ go run .
 go fmt # to format your code if you make changes!
 ```
 
-# How The Program Works & Outputs
+## 2.0 How The Program Works & Outputs
 
 On a high level, when using the CLI, we can essentially fake order Rendang as the CLI tool will ask us for first/last name, email & how many orders we want to make.
 
@@ -77,7 +80,7 @@ Mutex-protected stock update
 Async Email Sender (Mocked)
 ```
 
-# Notes
+## 3.0 Notes
 Regarding goroutines, the main goroutine **does NOT** wait for other goroutines so if the main goroutine exited, other goroutines e.g., sendConfirmationEmail will not be executed. To remedy this, we use a `WaitGroup`. Also, in comparison to other languages, creating thread is cheaper, with fast startup times, with minimal resources used.
 
 **Channels in Go are typed conduits used to send and receive values**, allowing goroutines to synchronize execution and communicate without explicit locks. They provide safe data transfer, blocking by default until both sender and receiver are ready.
@@ -118,7 +121,7 @@ func printFirstNames() []string {
 }
 ```
 
-# Resources
+## 4.0 Resources
 - [Golang Tutorial for Beginners | Full Go Course](https://www.youtube.com/watch?v=yyUHQIec83I)
 - [Go Channels](https://go.dev/tour/concurrency/2)
 - [Go Goroutines](https://go.dev/tour/concurrency/1)
