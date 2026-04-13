@@ -7,6 +7,10 @@ We first install Go from it's [website](https://go.dev/doc/install). I'm using W
 
 
 ```bash
+# remove old go vesions
+sudo apt-get purge golang-go
+sudo apt-get autoremove
+
 wget https://go.dev/dl/go1.26.0.darwin-amd64.pkg
 rm -rf /usr/local/go && tar -C /usr/local -xzf go1.26.0.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
