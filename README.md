@@ -2,8 +2,6 @@
 
 A small project for learning Go that uses [Cobra](https://github.com/spf13/cobra) for a nice terminal experience for ordering Rendang. Also can't wait for Hari Raya Aidilfitri! 🥳
 
-![cli-multi-turn-sample](/assets/cli-multi-turn-sample.png)
-
 ## Getting Started
 
 Make sure Go is installed, then run:
@@ -51,21 +49,7 @@ go run . status --event "Hari Raya Booth" --stock 250
 
 ## Example Output
 
-```text
-===================
-Rendang Factory CLI
-===================
-Stock: 98/100 pack(s) available
-
-Order confirmed
----------------
-Customer : Faiq Adzlan
-Email    : faiq@example.com
-Packs    : 2
-Remaining: 98
-
-Confirmation queued for faiq@example.com.
-```
+![cli-multi-turn-sample](/assets/cli-multi-turn-sample.png)
 
 ## Development
 
