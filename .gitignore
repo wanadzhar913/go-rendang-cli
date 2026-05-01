@@ -1,0 +1,8 @@
+.gocache
+.gomodcache
+.gopath
+*.exe
+*.dll
+*.so
+*.test
+*.out
